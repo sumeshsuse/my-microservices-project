@@ -1,0 +1,13 @@
+.idea/
+.vscode/
+
+app/target/
+app/order-service/target/
+app/product-service/target/
+app/user-service/target/
+
+infra/.terraform/
+infra/.terraform.lock.hcl
+infra/terraform.tfstate
+infra/terraform.tfstate.backup
+infra/*.tfstate.*

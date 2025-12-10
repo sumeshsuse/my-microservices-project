@@ -1,0 +1,23 @@
+# Maven
+target/
+*.jar
+*.war
+*.class
+
+# IntelliJ / Eclipse / VSCode
+.idea/
+*.iml
+.project
+.classpath
+.settings/
+.vscode/
+
+# OS files
+.DS_Store
+
+# Logs
+logs/
+*.log
+
+# Docker
+**/Dockerfile~
