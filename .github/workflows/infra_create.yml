@@ -1,0 +1,53 @@
+name: Terraform Infra
+
+on:
+  # Run automatically when infra files change on main
+  push:
+    branches: [ main ]
+    paths:
+      - "infra/**"
+      - ".github/workflows/terraform-infra.yml"
+
+  # Allow manual trigger from GitHub UI
+  workflow_dispatch:
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: infra
+
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_REGION: ${{ secrets.AWS_REGION }}
+      TF_VAR_key_name: ${{ secrets.TF_VAR_KEY_NAME }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.9.8
+
+      - name: Terraform Init
+        run: terraform init -input=false
+
+      - name: Terraform Format Check
+        run: terraform fmt -check
+
+      - name: Terraform Validate
+        run: terraform validate
+
+      - name: Terraform Plan
+        run: terraform plan -input=false -out=tfplan
+
+      # ⚠️ This will automatically apply on push to main.
+      # If you want only manual apply, move this step to a separate workflow_dispatch-only job.
+      - name: Terraform Apply
+        if: github.event_name == 'push'
+        run: terraform apply -input=false -auto-approve tfplan
