@@ -47,7 +47,7 @@ jobs:
         run: terraform plan -input=false -out=tfplan
 
       # ⚠️ This will automatically apply on push to main.
-      # If you want only manual apply, move this step to a separate workflow_dispatch-only job.
+      # If you want only manual apply, move this step to a separate workflow_dispatch-only job..
       - name: Terraform Apply
         if: github.event_name == 'push'
         run: terraform apply -input=false -auto-approve tfplan
