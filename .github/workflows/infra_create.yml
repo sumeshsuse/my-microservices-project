@@ -1,7 +1,7 @@
 name: Terraform Infra
 
 on:
-  # Run automatically when infra files change on main
+  # Automatically run when infra files change on main
   push:
     branches: [ main ]
     paths:
@@ -46,8 +46,6 @@ jobs:
       - name: Terraform Plan
         run: terraform plan -input=false -out=tfplan
 
-      # ⚠️ This will automatically apply on push to main.
-      # If you want only manual apply, move this step to a separate workflow_dispatch-only job..
+      # APPLY will now run on BOTH push and workflow_dispatch
       - name: Terraform Apply
-        if: github.event_name == 'push'
         run: terraform apply -input=false -auto-approve tfplan
