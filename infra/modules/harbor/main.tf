@@ -1,6 +1,6 @@
 resource "aws_security_group" "harbor_sg" {
   name        = "harbor-sg"
-  description = "Allow SSH and HTTP for Harbor"
+  description = "Allow SSH and HTTP/HTTPS for Harbor"
   vpc_id      = var.vpc_id
 
   # SSH
@@ -11,10 +11,18 @@ resource "aws_security_group" "harbor_sg" {
     cidr_blocks = [var.allowed_ssh_cidr]
   }
 
-  # HTTP (Harbor UI + registry)
+  # HTTP (Harbor UI + registry redirect/help)
   ingress {
     from_port   = 80
     to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  # HTTPS (Harbor UI + Docker registry login/push/pull)
+  ingress {
+    from_port   = 443
+    to_port     = 443
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
