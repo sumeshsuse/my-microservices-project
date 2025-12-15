@@ -1,33 +1,24 @@
 resource "aws_security_group" "harbor_sg" {
   name        = "harbor-sg"
-  description = "Allow SSH and HTTP/HTTPS for Harbor"
+  description = "Allow SSH and HTTP for Harbor (HTTP only)"
   vpc_id      = var.vpc_id
 
-  # SSH
   ingress {
+    description = "SSH"
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
     cidr_blocks = [var.allowed_ssh_cidr]
   }
 
-  # HTTP (Harbor UI + registry redirect/help)
   ingress {
+    description = "HTTP Harbor UI & Registry"
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  # HTTPS (Harbor UI + Docker registry login/push/pull)
-  ingress {
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  # Egress: allow all
   egress {
     from_port   = 0
     to_port     = 0
@@ -48,7 +39,6 @@ resource "aws_instance" "harbor" {
 
   associate_public_ip_address = true
 
-  # Use our user_data script file
   user_data = file("${path.module}/user_data_harbor.sh")
 
   tags = {
