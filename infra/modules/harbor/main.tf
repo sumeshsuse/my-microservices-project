@@ -1,6 +1,6 @@
 resource "aws_security_group" "harbor_sg" {
   name        = "harbor-sg"
-  description = "Allow SSH and HTTP for Harbor (HTTP only)"
+  description = "Allow SSH and HTTP for Harbor (HTTP only) + allow 443 probe from client CIDR"
   vpc_id      = var.vpc_id
 
   ingress {
@@ -17,6 +17,17 @@ resource "aws_security_group" "harbor_sg" {
     to_port     = 80
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  # IMPORTANT: Docker tries HTTPS first. AWS SG drops packets if port not allowed → timeout.
+  # We allow 443 ONLY from your client CIDR, then we will "reject" 443 on the instance (ufw)
+  # so Docker fails fast and falls back to HTTP.
+  ingress {
+    description = "HTTPS probe for Docker (allow from client CIDR only)"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = [var.allowed_client_cidr]
   }
 
   egress {

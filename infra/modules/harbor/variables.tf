@@ -22,3 +22,8 @@ variable "allowed_ssh_cidr" {
   type        = string
   description = "CIDR allowed to SSH into Harbor"
 }
+
+variable "allowed_client_cidr" {
+  type        = string
+  description = "CIDR allowed to access Harbor registry probe on 443 (your Mac public IP /32)"
+}
