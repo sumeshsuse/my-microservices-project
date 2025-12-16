@@ -30,14 +30,14 @@ module "harbor" {
 module "k8s_cluster" {
   source = "./modules/k8s-cluster"
 
-  ami_id                 = data.aws_ami.ubuntu.id
-  vpc_id                 = data.aws_vpc.default.id
-  key_name               = var.key_name
-  allowed_ssh_cidr        = var.allowed_ssh_cidr
+  ami_id           = data.aws_ami.ubuntu.id
+  vpc_id           = data.aws_vpc.default.id
+  key_name         = var.key_name
+  allowed_ssh_cidr = var.allowed_ssh_cidr
 
-  control_instance_type  = var.k8s_control_instance_type
-  worker_instance_type   = var.k8s_worker_instance_type
-  worker_count           = var.k8s_worker_count
+  control_instance_type = var.k8s_control_instance_type
+  worker_instance_type  = var.k8s_worker_instance_type
+  worker_count          = var.k8s_worker_count
 }
 
 # ----------------------------
