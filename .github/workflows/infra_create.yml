@@ -21,6 +21,11 @@ jobs:
       TF_VAR_allowed_ssh_cidr: ${{ secrets.ALLOWED_SSH_CIDR }}
       TF_VAR_allowed_client_cidr: ${{ secrets.ALLOWED_CLIENT_CIDR }}
 
+      # ✅ K8s cluster variables (NEW)
+      TF_VAR_k8s_control_instance_type: ${{ secrets.TF_VAR_K8S_CONTROL_INSTANCE_TYPE }}
+      TF_VAR_k8s_worker_instance_type: ${{ secrets.TF_VAR_K8S_WORKER_INSTANCE_TYPE }}
+      TF_VAR_k8s_worker_count: ${{ secrets.TF_VAR_K8S_WORKER_COUNT }}
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
