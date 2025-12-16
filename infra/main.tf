@@ -15,14 +15,14 @@ terraform {
 module "harbor" {
   source = "./modules/harbor"
 
-  ami_id               = data.aws_ami.ubuntu.id
-  vpc_id               = data.aws_vpc.default.id
-  key_name             = var.key_name
-  instance_type        = var.instance_type
-  allowed_ssh_cidr     = var.allowed_ssh_cidr
+  ami_id           = data.aws_ami.ubuntu.id
+  vpc_id           = data.aws_vpc.default.id
+  key_name         = var.key_name
+  instance_type    = var.instance_type
+  allowed_ssh_cidr = var.allowed_ssh_cidr
 
   # 🔴 THIS LINE FIXES YOUR ERROR
-  allowed_client_cidr  = var.allowed_client_cidr
+  allowed_client_cidr = var.allowed_client_cidr
 }
 
 # ----------------------------
