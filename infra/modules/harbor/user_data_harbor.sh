@@ -11,7 +11,8 @@ apt-get install -y \
   gnupg \
   lsb-release \
   docker.io \
-  docker-compose
+  docker-compose \
+  ufw
 
 systemctl enable docker
 systemctl start docker
@@ -56,3 +57,11 @@ sed -i 's/^harbor_admin_password:.*/harbor_admin_password: StrongHarborPass123/'
 # ----------------------------
 ./prepare
 ./install.sh --with-trivy
+
+# ----------------------------
+# Firewall rules (make 443 fail FAST)
+# ----------------------------
+ufw allow 22/tcp
+ufw allow 80/tcp
+ufw reject 443/tcp
+ufw --force enable
