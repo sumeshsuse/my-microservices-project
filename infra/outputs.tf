@@ -18,3 +18,13 @@ output "harbor_admin_password" {
   value       = module.harbor.harbor_admin_password
   sensitive   = true
 }
+
+output "control_plane_public_ip" {
+  description = "Public IP of the control plane"
+  value       = module.k8s_cluster.control_plane_public_ip
+}
+
+output "worker_public_ips" {
+  description = "Public IPs of worker nodes"
+  value       = module.k8s_cluster.worker_public_ips
+}
