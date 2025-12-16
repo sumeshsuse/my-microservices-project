@@ -1,47 +1,25 @@
 variable "aws_region" {
-  description = "AWS region to deploy resources"
+  description = "AWS region"
   type        = string
-  default     = "us-east-1"
 }
 
 variable "key_name" {
-  description = "Existing EC2 key pair name to SSH into instances"
+  description = "EC2 key pair name"
   type        = string
 }
 
 variable "instance_type" {
-  description = "EC2 instance type for Harbor"
+  description = "Instance type for Harbor EC2"
   type        = string
-  default     = "t3.medium"
-}
-
-variable "control_instance_type" {
-  description = "EC2 instance type for control plane"
-  type        = string
-  default     = "t3.medium"
-}
-
-variable "worker_instance_type" {
-  description = "EC2 instance type for worker nodes"
-  type        = string
-  default     = "t3.medium"
-}
-
-variable "worker_count" {
-  description = "Number of worker nodes"
-  type        = number
-  default     = 2
 }
 
 variable "allowed_ssh_cidr" {
-  description = "CIDR allowed to SSH into EC2 instances"
+  description = "CIDR allowed to SSH into Harbor"
   type        = string
-  default     = "0.0.0.0/0"
 }
 
-variable "harbor_version" {
-  description = "Harbor version to install"
+# 🔴 NEW VARIABLE (REQUIRED)
+variable "allowed_client_cidr" {
+  description = "CIDR allowed for Docker HTTPS probe on 443 (your public IP /32)"
   type        = string
-  default     = "2.10.0"
 }
-

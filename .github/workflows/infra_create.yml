@@ -1,7 +1,6 @@
 name: Terraform Infra
 
 on:
-  # Allow ONLY manual trigger from GitHub UI
   workflow_dispatch:
 
 jobs:
@@ -16,7 +15,12 @@ jobs:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_REGION: ${{ secrets.AWS_REGION }}
+
       TF_VAR_key_name: ${{ secrets.TF_VAR_KEY_NAME }}
+
+      # 🔴 REQUIRED VARIABLES (THIS FIXES YOUR ERROR)
+      TF_VAR_allowed_ssh_cidr: ${{ secrets.ALLOWED_SSH_CIDR }}
+      TF_VAR_allowed_client_cidr: ${{ secrets.ALLOWED_CLIENT_CIDR }}
 
     steps:
       - name: Checkout repository

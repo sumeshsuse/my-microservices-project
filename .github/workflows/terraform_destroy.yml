@@ -1,7 +1,6 @@
 name: Terraform Destroy Infra
 
 on:
-  # ✅ Only manual trigger from GitHub UI
   workflow_dispatch:
 
 jobs:
@@ -15,7 +14,12 @@ jobs:
     env:
       TF_IN_AUTOMATION: "true"
       AWS_REGION: ${{ secrets.AWS_REGION }}
+
       TF_VAR_key_name: ${{ secrets.TF_VAR_KEY_NAME }}
+
+      # 🔴 REQUIRED VARIABLES (SAME HERE)
+      TF_VAR_allowed_ssh_cidr: ${{ secrets.ALLOWED_SSH_CIDR }}
+      TF_VAR_allowed_client_cidr: ${{ secrets.ALLOWED_CLIENT_CIDR }}
 
     steps:
       - name: Checkout repository
