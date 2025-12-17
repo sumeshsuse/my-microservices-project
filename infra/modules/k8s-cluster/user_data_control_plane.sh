@@ -56,7 +56,7 @@ systemctl enable kubelet
 
 INTERNAL_IP=$(curl -s http://169.254.169.254/latest/meta-data/local-ipv4)
 
-# Init control plane (fixed token so workers can join)
+# Init control plane
 kubeadm init \
   --apiserver-advertise-address=${INTERNAL_IP} \
   --pod-network-cidr=192.168.0.0/16 \
@@ -65,8 +65,13 @@ kubeadm init \
 
 # Configure kubectl for ubuntu user
 mkdir -p /home/ubuntu/.kube
-cp /etc/kubernetes/admin.conf /home/ubuntu/.kube/config
+cp -i /etc/kubernetes/admin.conf /home/ubuntu/.kube/config
 chown ubuntu:ubuntu /home/ubuntu/.kube/config
 
-# Install Calico CNI
-sudo -u ubuntu kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.28.0/manifests/calico.yaml
+# ✅ Configure kubectl for root too (so sudo kubeadm/kubectl works)
+mkdir -p /root/.kube
+cp -i /etc/kubernetes/admin.conf /root/.kube/config
+chown root:root /root/.kube/config
+
+# Install Calico CNI (use explicit kubeconfig)
+kubectl --kubeconfig=/etc/kubernetes/admin.conf apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.28.0/manifests/calico.yaml
