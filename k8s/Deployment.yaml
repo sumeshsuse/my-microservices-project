@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: userservicecontainer
-        image: 44.197.198.227/microservices/user-service:latest
+        image: 44.220.252.51:80/microservices/user-service:latest
         ports:
         - containerPort: 8081
           protocol: TCP
