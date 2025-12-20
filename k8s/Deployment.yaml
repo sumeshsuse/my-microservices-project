@@ -13,17 +13,14 @@ spec:
       labels:
         app: user-service
     spec:
-      template:
-        spec:
-          containers:
-            - name: userservicecontainer
-              image: 44.220.252.51:80/microservices/user-service:latest
-              imagePullPolicy: Always
-              ports:
-                - containerPort: 8081
-              envFrom:
-                - configMapRef:
-                    name: user-service-config
-                - secretRef:
-                    name: user-service-secret
-
+      containers:
+        - name: userservicecontainer
+          image: 44.220.252.51:80/microservices/user-service:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8081
+          envFrom:
+            - configMapRef:
+                name: user-service-config
+            - secretRef:
+                name: user-service-secret
