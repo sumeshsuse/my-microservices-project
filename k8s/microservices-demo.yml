@@ -51,12 +51,6 @@ spec:
                 configMapKeyRef:
                   name: mysql-config
                   key: MYSQL_DATABASE
-          volumeMounts:
-            - name: mysql-data
-              mountPath: /var/lib/mysql
-      volumes:
-        - name: mysql-data
-          emptyDir: {}
 ---
 apiVersion: v1
 kind: Service
@@ -107,7 +101,7 @@ spec:
     spec:
       containers:
         - name: userservicecontainer
-          image: 34.239.160.82/microservices/user-service:latest
+          image: 34.239.160.82:80/microservices/user-service:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8081
