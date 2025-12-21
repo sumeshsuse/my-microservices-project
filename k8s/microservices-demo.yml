@@ -99,13 +99,10 @@ spec:
       labels:
         app: user-service
     spec:
-      # ✅ This must exist in microservices-demo namespace:
-      # kubectl -n microservices-demo create secret docker-registry harbor-pull ...
       imagePullSecrets:
         - name: harbor-pull
       containers:
         - name: userservicecontainer
-          # ✅ IMPORTANT: keep :80 so it doesn't try https/443
           image: 34.239.160.82:80/microservices/user-service:latest
           imagePullPolicy: Always
           ports:
