@@ -28,10 +28,13 @@ EOT
 
 modprobe br_netfilter || true
 
+# rp_filter strict can break overlay networking on some setups
 cat <<'EOT' >/etc/sysctl.d/k8s.conf
 net.ipv4.ip_forward=1
 net.bridge.bridge-nf-call-iptables=1
 net.bridge.bridge-nf-call-ip6tables=1
+net.ipv4.conf.all.rp_filter=0
+net.ipv4.conf.default.rp_filter=0
 EOT
 
 sysctl --system
@@ -73,13 +76,13 @@ mkdir -p /root/.kube
 cp -f /etc/kubernetes/admin.conf /root/.kube/config
 chown -R root:root /root/.kube
 
-# --- Install Calico (match your running version) ---
+# --- Install Calico ---
 kubectl --kubeconfig=/etc/kubernetes/admin.conf apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.28.2/manifests/calico.yaml
 
 # Optional: wait a bit for system pods
 kubectl --kubeconfig=/etc/kubernetes/admin.conf -n kube-system rollout status deploy/coredns --timeout=180s || true
 kubectl --kubeconfig=/etc/kubernetes/admin.conf -n kube-system rollout status ds/calico-node --timeout=300s || true
 
-# --- Print join command into a file (for manual use/debug) ---
+# --- Print join command into a file (for debug) ---
 kubeadm token create --print-join-command > /opt/kubeadm_join.sh || true
 chmod +x /opt/kubeadm_join.sh || true
