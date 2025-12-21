@@ -11,31 +11,15 @@ resource "aws_security_group" "k8s_sg" {
     cidr_blocks = [var.allowed_ssh_cidr]
   }
 
-  # Kubernetes API server (for kubectl access)
+  # Kubernetes API server (kubectl / worker join)
   ingress {
     from_port   = 6443
     to_port     = 6443
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] # (Better: restrict to your IP)
+    cidr_blocks = ["0.0.0.0/0"] # better: restrict to your IP
   }
 
-  # etcd (only needed if external access; normally keep within cluster)
-  ingress {
-    from_port = 2379
-    to_port   = 2380
-    protocol  = "tcp"
-    self      = true
-  }
-
-  # kubelet API (node-to-control-plane)
-  ingress {
-    from_port = 10250
-    to_port   = 10250
-    protocol  = "tcp"
-    self      = true
-  }
-
-  # NodePort range
+  # NodePort range (apps)
   ingress {
     from_port   = 30000
     to_port     = 32767
@@ -43,7 +27,7 @@ resource "aws_security_group" "k8s_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  # ✅ MOST IMPORTANT: allow node-to-node + pod overlay traffic inside the cluster SG
+  # ✅ MOST IMPORTANT: allow ALL intra-cluster traffic within same SG (node<->node, pod overlay)
   ingress {
     from_port = 0
     to_port   = 0
@@ -51,7 +35,7 @@ resource "aws_security_group" "k8s_sg" {
     self      = true
   }
 
-  # ✅ Calico IP-in-IP encapsulation (Protocol 4)
+  # ✅ Calico IP-in-IP encapsulation (Protocol 4) — you have CALICO_IPV4POOL_IPIP=Always
   ingress {
     from_port = 0
     to_port   = 0
@@ -59,7 +43,7 @@ resource "aws_security_group" "k8s_sg" {
     self      = true
   }
 
-  # ✅ Calico BGP (your calico shows CLUSTER_TYPE: k8s,bgp)
+  # ✅ Calico BGP (TCP 179) — your calico shows CLUSTER_TYPE: k8s,bgp
   ingress {
     from_port = 179
     to_port   = 179
