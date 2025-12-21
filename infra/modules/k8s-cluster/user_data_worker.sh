@@ -18,8 +18,6 @@ cat <<'EOT' >/etc/sysctl.d/k8s.conf
 net.ipv4.ip_forward=1
 net.bridge.bridge-nf-call-iptables=1
 net.bridge.bridge-nf-call-ip6tables=1
-net.ipv4.conf.all.rp_filter=0
-net.ipv4.conf.default.rp_filter=0
 EOT
 
 sysctl --system
@@ -43,10 +41,10 @@ apt-get install -y kubelet kubeadm kubectl
 apt-mark hold kubelet kubeadm kubectl
 systemctl enable kubelet
 
-# ✅ Terraform injects this via templatefile()
-CONTROL_PLANE_IP="${CONTROL_PLANE_PRIVATE_IP}"
+# ✅ Terraform will substitute this at render time
+CONTROL_PLANE_IP="${CONTROL_PLANE_IP}"
 
-# Join (dev/lab friendly)
+# Join (lab/dev friendly)
 kubeadm join "${CONTROL_PLANE_IP}:6443" \
   --token abcdef.0123456789abcdef \
   --discovery-token-unsafe-skip-ca-verification

@@ -11,15 +11,31 @@ resource "aws_security_group" "k8s_sg" {
     cidr_blocks = [var.allowed_ssh_cidr]
   }
 
-  # Kubernetes API server (kubectl / worker join)
+  # Kubernetes API server (kubectl / kubeadm join)
   ingress {
     from_port   = 6443
     to_port     = 6443
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] # better: restrict to your IP
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
-  # NodePort range (apps)
+  # etcd (keep inside cluster)
+  ingress {
+    from_port = 2379
+    to_port   = 2380
+    protocol  = "tcp"
+    self      = true
+  }
+
+  # kubelet API (node <-> control plane)
+  ingress {
+    from_port = 10250
+    to_port   = 10250
+    protocol  = "tcp"
+    self      = true
+  }
+
+  # NodePort range
   ingress {
     from_port   = 30000
     to_port     = 32767
@@ -27,7 +43,7 @@ resource "aws_security_group" "k8s_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  # ✅ MOST IMPORTANT: allow ALL intra-cluster traffic within same SG (node<->node, pod overlay)
+  # ✅ MUST: allow all node-to-node traffic inside the same SG
   ingress {
     from_port = 0
     to_port   = 0
@@ -35,7 +51,7 @@ resource "aws_security_group" "k8s_sg" {
     self      = true
   }
 
-  # ✅ Calico IP-in-IP encapsulation (Protocol 4) — you have CALICO_IPV4POOL_IPIP=Always
+  # ✅ Calico IP-in-IP (Protocol 4) because CALICO_IPV4POOL_IPIP=Always
   ingress {
     from_port = 0
     to_port   = 0
@@ -43,7 +59,7 @@ resource "aws_security_group" "k8s_sg" {
     self      = true
   }
 
-  # ✅ Calico BGP (TCP 179) — your calico shows CLUSTER_TYPE: k8s,bgp
+  # ✅ Calico BGP (your calico shows CLUSTER_TYPE: k8s,bgp)
   ingress {
     from_port = 179
     to_port   = 179
@@ -58,9 +74,7 @@ resource "aws_security_group" "k8s_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags = {
-    Name = "k8s-cluster-sg"
-  }
+  tags = { Name = "k8s-cluster-sg" }
 }
 
 resource "aws_instance" "control_plane" {
@@ -72,9 +86,7 @@ resource "aws_instance" "control_plane" {
 
   user_data = file("${path.module}/user_data_control_plane.sh")
 
-  tags = {
-    Name = "k8s-control-plane"
-  }
+  tags = { Name = "k8s-control-plane" }
 }
 
 resource "aws_instance" "worker" {
@@ -85,12 +97,10 @@ resource "aws_instance" "worker" {
   vpc_security_group_ids      = [aws_security_group.k8s_sg.id]
   associate_public_ip_address = true
 
-  # ✅ IMPORTANT: pass control-plane private IP into worker script
+  # ✅ FIX: pass CONTROL_PLANE_IP (matches the template variable in user_data_worker.sh)
   user_data = templatefile("${path.module}/user_data_worker.sh", {
-    CONTROL_PLANE_PRIVATE_IP = aws_instance.control_plane.private_ip
+    CONTROL_PLANE_IP = aws_instance.control_plane.private_ip
   })
 
-  tags = {
-    Name = "k8s-worker-${count.index + 1}"
-  }
+  tags = { Name = "k8s-worker-${count.index + 1}" }
 }
