@@ -13,7 +13,7 @@ stringData:
   .dockerconfigjson: |
     {
       "auths": {
-        "3.236.249.231:80": {
+        "98.82.135.80:80": {
           "username": "admin",
           "password": "StrongHarborPass123",
           "auth": "YWRtaW46U3Ryb25nSGFyYm9yUGFzczEyMw=="
@@ -121,7 +121,7 @@ spec:
         - name: harbor-pull
       containers:
         - name: userservicecontainer
-          image: 3.236.249.231:80/microservices/user-service:latest
+          image: 98.82.135.80:80/microservices/user-service:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8081
