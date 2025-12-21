@@ -13,7 +13,7 @@ stringData:
   .dockerconfigjson: |
     {
       "auths": {
-        "34.239.160.82:80": {
+        "3.236.249.231:80": {
           "username": "admin",
           "password": "StrongHarborPass123",
           "auth": "YWRtaW46U3Ryb25nSGFyYm9yUGFzczEyMw=="
