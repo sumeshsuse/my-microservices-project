@@ -122,7 +122,7 @@ spec:
       containers:
         - name: userservicecontainer
           image: 3.236.249.231:80/microservices/user-service:latest
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           ports:
             - containerPort: 8081
           envFrom:
