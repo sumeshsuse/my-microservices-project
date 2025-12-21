@@ -16,10 +16,10 @@ resource "aws_security_group" "k8s_sg" {
     from_port   = 6443
     to_port     = 6443
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] # better restrict later
+    cidr_blocks = ["0.0.0.0/0"] # better: restrict to your IP
   }
 
-  # NodePort range (if you use NodePort services)
+  # NodePort range (optional public access)
   ingress {
     from_port   = 30000
     to_port     = 32767
@@ -27,7 +27,7 @@ resource "aws_security_group" "k8s_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  # ✅ MUST: allow all node-to-node traffic inside the same SG (CNI needs it)
+  # ✅ MUST: allow node-to-node + pod overlay traffic inside the same SG
   ingress {
     from_port = 0
     to_port   = 0
@@ -36,7 +36,7 @@ resource "aws_security_group" "k8s_sg" {
   }
 
   # ✅ Calico IP-in-IP encapsulation (Protocol 4)
-  # (Only needed if Calico uses IPIP; default manifest often does)
+  # (Needed when Calico uses IPIP, common in AWS)
   ingress {
     from_port = 0
     to_port   = 0
@@ -44,7 +44,7 @@ resource "aws_security_group" "k8s_sg" {
     self      = true
   }
 
-  # ✅ Calico BGP (only if you enabled BGP mode; harmless inside SG)
+  # ✅ Calico BGP (only needed if Calico is running in BGP mode)
   ingress {
     from_port = 179
     to_port   = 179
@@ -82,7 +82,7 @@ resource "aws_instance" "worker" {
   vpc_security_group_ids      = [aws_security_group.k8s_sg.id]
   associate_public_ip_address = true
 
-  # ✅ IMPORTANT: key name MUST match the placeholder used in user_data_worker.sh
+  # ✅ FIX: pass CONTROL_PLANE_IP (must match ${CONTROL_PLANE_IP} in the worker script)
   user_data = templatefile("${path.module}/user_data_worker.sh", {
     CONTROL_PLANE_IP = aws_instance.control_plane.private_ip
   })

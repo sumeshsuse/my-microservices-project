@@ -79,7 +79,7 @@ chown -R root:root /root/.kube
 # --- Install Calico ---
 kubectl --kubeconfig=/etc/kubernetes/admin.conf apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.28.2/manifests/calico.yaml
 
-# Optional: wait for kube-system
+# Optional: wait for core addons
 kubectl --kubeconfig=/etc/kubernetes/admin.conf -n kube-system rollout status deploy/coredns --timeout=180s || true
 kubectl --kubeconfig=/etc/kubernetes/admin.conf -n kube-system rollout status ds/calico-node --timeout=300s || true
 
