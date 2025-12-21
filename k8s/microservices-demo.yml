@@ -121,8 +121,8 @@ spec:
         - name: harbor-pull
       containers:
         - name: userservicecontainer
-          image: 34.239.160.82:80/microservices/user-service:latest
-          imagePullPolicy: Always
+          image: 3.236.249.231:80/microservices/user-service:latest
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8081
           envFrom:
