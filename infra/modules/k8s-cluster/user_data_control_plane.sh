@@ -79,10 +79,10 @@ chown -R root:root /root/.kube
 # --- Install Calico ---
 kubectl --kubeconfig=/etc/kubernetes/admin.conf apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.28.2/manifests/calico.yaml
 
-# Optional: wait a bit for system pods
+# Optional: wait for kube-system
 kubectl --kubeconfig=/etc/kubernetes/admin.conf -n kube-system rollout status deploy/coredns --timeout=180s || true
 kubectl --kubeconfig=/etc/kubernetes/admin.conf -n kube-system rollout status ds/calico-node --timeout=300s || true
 
-# --- Print join command into a file (for debug) ---
+# --- Print join command into a file (debug) ---
 kubeadm token create --print-join-command > /opt/kubeadm_join.sh || true
 chmod +x /opt/kubeadm_join.sh || true
