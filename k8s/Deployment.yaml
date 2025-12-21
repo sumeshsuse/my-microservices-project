@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: userservicecontainer
-          image: 44.220.252.51:80/microservices/user-service:latest
+          image: 34.239.160.82:80/microservices/user-service:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8081
