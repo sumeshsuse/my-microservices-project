@@ -41,7 +41,7 @@ apt-get install -y kubelet kubeadm kubectl
 apt-mark hold kubelet kubeadm kubectl
 systemctl enable kubelet
 
-# ✅ Terraform will substitute this at render time
+# ✅ Terraform substitutes this placeholder via templatefile()
 CONTROL_PLANE_IP="${CONTROL_PLANE_IP}"
 
 # Join (lab/dev friendly)
