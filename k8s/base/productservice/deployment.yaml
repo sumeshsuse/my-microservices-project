@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: product-service
+  namespace: microservices-demo
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: product-service
+  template:
+    metadata:
+      labels:
+        app: product-service
+    spec:
+      imagePullSecrets:
+        - name: harbor-pull
+      containers:
+        - name: productservicecontainer
+          image: 44.199.252.87:80/microservices/product-serviceatest:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8082
+          envFrom:
+            - configMapRef:
+                name: product-service-config
+            - secretRef:
+                name: user-service-secret   # reuse same mysql creds (root/rootpass)
