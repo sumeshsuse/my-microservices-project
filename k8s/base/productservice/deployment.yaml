@@ -25,4 +25,4 @@ spec:
             - configMapRef:
                 name: product-service-config
             - secretRef:
-                name: user-service-secret   # reuse same mysql creds (root/rootpass)
+                name: user-service-secret
