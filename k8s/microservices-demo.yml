@@ -139,7 +139,9 @@ metadata:
 spec:
   selector:
     app: user-service
+  type: NodePort
   ports:
     - port: 80
       targetPort: 8081
-  type: ClusterIP
+      nodePort: 30081
+
