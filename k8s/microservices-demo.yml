@@ -6,6 +6,24 @@ metadata:
 apiVersion: v1
 kind: Secret
 metadata:
+  name: harbor-pull
+  namespace: microservices-demo
+type: kubernetes.io/dockerconfigjson
+stringData:
+  .dockerconfigjson: |
+    {
+      "auths": {
+        "44.199.252.87:80": {
+          "username": "admin",
+          "password": "StrongHarborPass123",
+          "auth": "YWRtaW46U3Ryb25nSGFyYm9yUGFzczEyMw=="
+        }
+      }
+    }
+---
+apiVersion: v1
+kind: Secret
+metadata:
   name: mysql-secret
   namespace: microservices-demo
 type: Opaque
@@ -70,9 +88,9 @@ metadata:
   name: user-service-config
   namespace: microservices-demo
 data:
-  SPRING_DATASOURCE_URL: "jdbc:mysql://mysql.microservices-demo.svc.cluster.local:3306/users_db"
-  SPRING_JPA_HIBERNATE_DDL_AUTO: "update"
-  SPRING_JPA_DATABASE_PLATFORM: "org.hibernate.dialect.MySQLDialect"
+  SPRING_DATASOURCE_URL: jdbc:mysql://mysql.microservices-demo.svc.cluster.local:3306/users_db
+  SPRING_JPA_HIBERNATE_DDL_AUTO: update
+  SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.MySQLDialect
 ---
 apiVersion: v1
 kind: Secret
@@ -81,8 +99,8 @@ metadata:
   namespace: microservices-demo
 type: Opaque
 stringData:
-  SPRING_DATASOURCE_USERNAME: "root"
-  SPRING_DATASOURCE_PASSWORD: "rootpass"
+  SPRING_DATASOURCE_USERNAME: root
+  SPRING_DATASOURCE_PASSWORD: rootpass
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -103,7 +121,7 @@ spec:
         - name: harbor-pull
       containers:
         - name: userservicecontainer
-          image: 44.199.252.87:80/microservices/user-service:latest
+          image: 44.199.252.87:80/microservices/user-serviceatest:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8081
@@ -122,7 +140,6 @@ spec:
   selector:
     app: user-service
   ports:
-    - name: http
-      port: 80
+    - port: 80
       targetPort: 8081
   type: ClusterIP
