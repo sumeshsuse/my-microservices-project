@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-config
+  namespace: microservices-demo
+data:
+  MYSQL_DATABASE: users_db
