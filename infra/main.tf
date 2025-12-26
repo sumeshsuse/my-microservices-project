@@ -6,22 +6,38 @@ terraform {
       source  = "hashicorp/aws"
       version = "~> 5.0"
     }
+    http = {
+      source  = "hashicorp/http"
+      version = "~> 3.0"
+    }
   }
 }
 
 # ----------------------------
-# Harbor Module (UNCHANGED)
+# Find your CURRENT public IP (Mac)
+# ----------------------------
+data "http" "myip" {
+  url = "https://checkip.amazonaws.com/"
+}
+
+locals {
+  my_public_ip_cidr = "${chomp(data.http.myip.response_body)}/32"
+}
+
+# ----------------------------
+# Harbor Module
 # ----------------------------
 module "harbor" {
   source = "./modules/harbor"
 
-  ami_id           = data.aws_ami.ubuntu.id
-  vpc_id           = data.aws_vpc.default.id
-  key_name         = var.key_name
-  instance_type    = var.instance_type
-  allowed_ssh_cidr = var.allowed_ssh_cidr
+  ami_id        = data.aws_ami.ubuntu.id
+  vpc_id        = data.aws_vpc.default.id
+  key_name      = var.key_name
+  instance_type = var.instance_type
 
-  allowed_client_cidr = var.allowed_client_cidr
+  # ✅ auto-uses your current public IP
+  allowed_ssh_cidr    = local.my_public_ip_cidr
+  allowed_client_cidr = local.my_public_ip_cidr
 }
 
 # ----------------------------
@@ -33,7 +49,7 @@ module "k8s_cluster" {
   ami_id           = data.aws_ami.ubuntu.id
   vpc_id           = data.aws_vpc.default.id
   key_name         = var.key_name
-  allowed_ssh_cidr = var.allowed_ssh_cidr
+  allowed_ssh_cidr = local.my_public_ip_cidr
 
   control_instance_type = var.k8s_control_instance_type
   worker_instance_type  = var.k8s_worker_instance_type
