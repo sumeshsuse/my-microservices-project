@@ -1,3 +1,8 @@
+variable "aws_region" {
+  type        = string
+  description = "AWS region to deploy resources"
+}
+
 variable "key_name" {
   type        = string
   description = "EC2 key pair name"
