@@ -17,7 +17,7 @@ spec:
         - name: harbor-pull
       containers:
         - name: userservicecontainer
-          image: 35.170.69.37:80/microservices/user-serviceatest:latest
+          image: 35.170.69.37:80/microservices/user-serviceatest:dbfix
           imagePullPolicy: Always
           ports:
             - containerPort: 8081
