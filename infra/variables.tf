@@ -14,6 +14,16 @@ variable "instance_type" {
   default     = "t3.medium"
 }
 
+variable "allowed_ssh_cidr" {
+  type        = string
+  description = "CIDR allowed to SSH into EC2 instances (your public IP /32)"
+}
+
+variable "allowed_client_cidr" {
+  type        = string
+  description = "CIDR allowed to access Harbor registry probe on 443 (your public IP /32)"
+}
+
 variable "k8s_control_instance_type" {
   type        = string
   description = "Instance type for Kubernetes control plane"
