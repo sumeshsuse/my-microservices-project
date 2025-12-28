@@ -4,6 +4,9 @@ metadata:
   name: user-service-config
   namespace: microservices-demo
 data:
-  SPRING_DATASOURCE_URL: jdbc:mysql://mysql.microservices-demo.svc.cluster.local:3306/users_db
-  SPRING_JPA_HIBERNATE_DDL_AUTO: update
-  SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.MySQLDialect
+  SPRING_DATASOURCE_URL: "jdbc:mysql://mysql.microservices-demo.svc.cluster.local:3306/users_db?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true"
+  SPRING_DATASOURCE_DRIVER_CLASS_NAME: "com.mysql.cj.jdbc.Driver"
+  SPRING_JPA_HIBERNATE_DDL_AUTO: "update"
+  SPRING_JPA_SHOW_SQL: "true"
+  SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL: "true"
+  SPRING_JPA_DATABASE_PLATFORM: "org.hibernate.dialect.MySQLDialect"
