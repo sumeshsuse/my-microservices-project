@@ -4,15 +4,10 @@ metadata:
   name: product-service-config
   namespace: microservices-demo
 data:
-  # MySQL service inside the cluster (NOT localhost)
-  # createDatabaseIfNotExist will work only if the DB user has permission to create DB
   SPRING_DATASOURCE_URL: "jdbc:mysql://mysql.microservices-demo.svc.cluster.local:3306/products_db?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true"
-
   SPRING_DATASOURCE_DRIVER_CLASS_NAME: "com.mysql.cj.jdbc.Driver"
-
   SPRING_JPA_HIBERNATE_DDL_AUTO: "update"
   SPRING_JPA_SHOW_SQL: "true"
   SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL: "true"
-
-  # Optional (Spring can auto-detect; keep or remove)
+  # optional
   SPRING_JPA_DATABASE_PLATFORM: "org.hibernate.dialect.MySQLDialect"
