@@ -5,3 +5,13 @@ metadata:
   namespace: microservices-demo
 data:
   MYSQL_DATABASE: users_db
+
+  # This file will be executed by mysql container at first startup (when /var/lib/mysql is empty)
+  init.sql: |
+    CREATE DATABASE IF NOT EXISTS users_db;
+    CREATE DATABASE IF NOT EXISTS products_db;
+    CREATE DATABASE IF NOT EXISTS orders_db;
+
+    -- OPTIONAL: if you want to allow root to access from other pods (usually ok inside cluster)
+    -- MySQL 8 uses caching_sha2_password by default; Spring can still connect.
+    -- If you have a separate app user, we can add CREATE USER + GRANT here.
