@@ -4,11 +4,9 @@ metadata:
   name: user-service
   namespace: microservices-demo
 spec:
+  type: ClusterIP
   selector:
     app: user-service
-  type: NodePort
   ports:
-    - name: http
-      port: 80
-      targetPort: 8081
-      nodePort: 30081
+    - port: 80
+      targetPort: 8080

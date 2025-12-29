@@ -4,11 +4,9 @@ metadata:
   name: order-service
   namespace: microservices-demo
 spec:
+  type: ClusterIP
   selector:
     app: order-service
-  type: NodePort
   ports:
-    - name: http
-      port: 80
-      targetPort: 8083
-      nodePort: 30083
+    - port: 80
+      targetPort: 8080
