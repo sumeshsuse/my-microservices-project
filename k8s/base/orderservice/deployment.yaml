@@ -17,7 +17,7 @@ spec:
         - name: harbor-pull
       containers:
         - name: orderservicecontainer
-          image: 98.92.36.18:80/microservices/order-serviceatest:latest
+          image: 54.159.34.250:80/microservices/order-serviceatest:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8083
