@@ -79,12 +79,12 @@ module "eks_cluster" {
   source = "./modules/eks-cluster"
   count  = var.enable_eks ? 1 : 0
 
-  cluster_name       = var.eks_cluster_name
-  cluster_version    = var.eks_cluster_version
+  cluster_name        = var.eks_cluster_name
+  cluster_version     = var.eks_cluster_version
   node_instance_types = var.eks_node_instance_types
-  node_desired       = var.eks_node_desired
-  node_min           = var.eks_node_min
-  node_max           = var.eks_node_max
+  node_desired        = var.eks_node_desired
+  node_min            = var.eks_node_min
+  node_max            = var.eks_node_max
 
   tags = {
     Project = "my-microservices-project"
