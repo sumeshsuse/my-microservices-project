@@ -15,21 +15,21 @@ locals {
 
   # subnet tags required by EKS + AWS Load Balancers
   public_subnet_tags = merge(
-    {
-      "kubernetes.io/role/elb" = "1"
-    },
-    {
-      "kubernetes.io/cluster/${var.cluster_name}" = "shared"
-    }
+  {
+    "kubernetes.io/role/elb" = "1"
+  },
+  {
+    "kubernetes.io/cluster/${var.cluster_name}" = "shared"
+  }
   )
 
   private_subnet_tags = merge(
-    {
-      "kubernetes.io/role/internal-elb" = "1"
-    },
-    {
-      "kubernetes.io/cluster/${var.cluster_name}" = "shared"
-    }
+  {
+    "kubernetes.io/role/internal-elb" = "1"
+  },
+  {
+    "kubernetes.io/cluster/${var.cluster_name}" = "shared"
+  }
   )
 }
 
@@ -80,7 +80,15 @@ module "eks" {
 
   eks_managed_node_groups = {
     default = {
-      name           = "${var.cluster_name}-ng"
+      # ✅ keep this SHORT (prevents name_prefix length error)
+      name = "ng"
+
+      # ✅ Fix for: "expected length of name_prefix..."
+      iam_role_use_name_prefix = false
+
+      # if your cluster_name is long, keep this short too (e.g., "eks-ng-role")
+      iam_role_name = "${var.cluster_name}-ng-role"
+
       instance_types = var.node_instance_types
 
       desired_size = var.node_desired
