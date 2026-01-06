@@ -25,7 +25,24 @@ locals {
 }
 
 # ----------------------------
-# Harbor Module
+# Data sources (Default VPC + Ubuntu AMI)
+# ----------------------------
+data "aws_vpc" "default" {
+  default = true
+}
+
+data "aws_ami" "ubuntu" {
+  most_recent = true
+  owners      = ["099720109477"]
+
+  filter {
+    name   = "name"
+    values = ["ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-*"]
+  }
+}
+
+# ----------------------------
+# Harbor Module (EC2)
 # ----------------------------
 module "harbor" {
   source = "./modules/harbor"
@@ -35,7 +52,6 @@ module "harbor" {
   key_name      = var.key_name
   instance_type = var.instance_type
 
-  # ✅ auto-uses your current public IP
   allowed_ssh_cidr    = local.my_public_ip_cidr
   allowed_client_cidr = local.my_public_ip_cidr
 }
@@ -57,18 +73,21 @@ module "k8s_cluster" {
 }
 
 # ----------------------------
-# Data sources
+# ✅ NEW: EKS Cluster Module (optional)
 # ----------------------------
-data "aws_vpc" "default" {
-  default = true
-}
+module "eks_cluster" {
+  source = "./modules/eks-cluster"
+  count  = var.enable_eks ? 1 : 0
 
-data "aws_ami" "ubuntu" {
-  most_recent = true
-  owners      = ["099720109477"]
+  cluster_name       = var.eks_cluster_name
+  cluster_version    = var.eks_cluster_version
+  node_instance_types = var.eks_node_instance_types
+  node_desired       = var.eks_node_desired
+  node_min           = var.eks_node_min
+  node_max           = var.eks_node_max
 
-  filter {
-    name   = "name"
-    values = ["ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-*"]
+  tags = {
+    Project = "my-microservices-project"
+    Owner   = "sumesh"
   }
 }
