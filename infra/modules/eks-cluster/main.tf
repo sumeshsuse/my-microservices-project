@@ -15,21 +15,21 @@ locals {
 
   # subnet tags required by EKS + AWS Load Balancers
   public_subnet_tags = merge(
-  {
-    "kubernetes.io/role/elb" = "1"
-  },
-  {
-    "kubernetes.io/cluster/${var.cluster_name}" = "shared"
-  }
+    {
+      "kubernetes.io/role/elb" = "1"
+    },
+    {
+      "kubernetes.io/cluster/${var.cluster_name}" = "shared"
+    }
   )
 
   private_subnet_tags = merge(
-  {
-    "kubernetes.io/role/internal-elb" = "1"
-  },
-  {
-    "kubernetes.io/cluster/${var.cluster_name}" = "shared"
-  }
+    {
+      "kubernetes.io/role/internal-elb" = "1"
+    },
+    {
+      "kubernetes.io/cluster/${var.cluster_name}" = "shared"
+    }
   )
 }
 
